@@ -1,0 +1,11 @@
+// Import module
+@import 'partials/normalize';
+@import 'modules/modules';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: red;
+}
