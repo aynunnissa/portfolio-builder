@@ -1,15 +1,21 @@
 'use client';
 
+import { client } from '@/lib/client';
+import { IResponse } from '@/types/client';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import useInput from '@/hooks/use-input';
 
 // const notEmptyValidation = /^[a-zA-Z0-9\s]*$/;
 
 const ProfileForm = () => {
+  const isInitialLoad = useRef(true);
+
   const {
     value: enteredName,
     isValid: enteredNameIsValid,
     hasError: nameInputHasError,
     valueChangeHandler: nameChangedHandler,
+    defaultValueHandler: setDefaultName,
     inputBlurHandler: nameBlurHandler,
   } = useInput((value: string) => value !== '');
 
@@ -18,6 +24,7 @@ const ProfileForm = () => {
     isValid: enteredTitleIsValid,
     hasError: titleInputHasError,
     valueChangeHandler: titleChangedHandler,
+    defaultValueHandler: setDefaultTitle,
     inputBlurHandler: titleBlurHandler,
   } = useInput((value: string) => value !== '');
 
@@ -26,8 +33,27 @@ const ProfileForm = () => {
     isValid: enteredDescIsValid,
     hasError: descInputHasError,
     valueChangeHandler: descChangedHandler,
+    defaultValueHandler: setDefaultDesc,
     inputBlurHandler: descBlurHandler,
   } = useInput((value: string) => value !== '');
+
+  const fetchInitialProfile = useCallback(async () => {
+    const { data, error }: IResponse = await client.get({ url: '/users' });
+    if (data) {
+      const profileData = data[0];
+
+      if (isInitialLoad.current) {
+        setDefaultName(profileData.name);
+        setDefaultTitle(profileData.title);
+        setDefaultDesc(profileData.description);
+        isInitialLoad.current = false;
+      }
+    }
+  }, [setDefaultName, setDefaultTitle, setDefaultDesc]);
+
+  useEffect(() => {
+    fetchInitialProfile();
+  }, [fetchInitialProfile]);
 
   return (
     <div>
@@ -71,10 +97,10 @@ const ProfileForm = () => {
               onChange={descChangedHandler}
               onBlur={descBlurHandler}
               placeholder="Deskripsi"
+              value={enteredDesc}
+              rows={4}
               required
-            >
-              {enteredDesc}
-            </textarea>
+            ></textarea>
             {descInputHasError && (
               <p className="text-red-800">Deskripsi harus diisi</p>
             )}
