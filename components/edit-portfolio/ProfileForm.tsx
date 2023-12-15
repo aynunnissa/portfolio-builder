@@ -1,6 +1,6 @@
 'use client';
 
-import useInput from '@/app/hooks/use-input';
+import useInput from '@/hooks/use-input';
 
 // const notEmptyValidation = /^[a-zA-Z0-9\s]*$/;
 
