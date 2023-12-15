@@ -2,13 +2,15 @@
 
 import { client } from '@/lib/client';
 import { IResponse } from '@/types/client';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import useInput from '@/hooks/use-input';
 
 // const notEmptyValidation = /^[a-zA-Z0-9\s]*$/;
 
 const ProfileForm = () => {
   const isInitialLoad = useRef(true);
+  const [userId, setUserId] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     value: enteredName,
@@ -37,12 +39,40 @@ const ProfileForm = () => {
     inputBlurHandler: descBlurHandler,
   } = useInput((value: string) => value !== '');
 
+  const updateProfileData = async (event: FormEvent) => {
+    event.preventDefault();
+    if (!userId) {
+      console.log('User not found');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    const { data, error }: IResponse = await client.put({
+      url: `/users/${userId}`,
+      data: {
+        name: enteredName,
+        title: enteredTitle,
+        description: enteredDesc,
+      },
+    });
+
+    setIsSubmitting(false);
+
+    if (data) {
+      setDefaultName(data.name);
+      setDefaultTitle(data.title);
+      setDefaultDesc(data.description);
+    }
+  };
+
   const fetchInitialProfile = useCallback(async () => {
     const { data, error }: IResponse = await client.get({ url: '/users' });
     if (data) {
       const profileData = data[0];
 
       if (isInitialLoad.current) {
+        setUserId(profileData.id);
         setDefaultName(profileData.name);
         setDefaultTitle(profileData.title);
         setDefaultDesc(profileData.description);
@@ -58,7 +88,7 @@ const ProfileForm = () => {
   return (
     <div>
       <h4 className="text-bold text-underline">Profile</h4>
-      <form className="profile-form mt-4">
+      <form className="profile-form mt-4" onSubmit={updateProfileData}>
         <div className="flex flex-col gap-y-4">
           <div className="profile-field">
             <input
@@ -106,6 +136,14 @@ const ProfileForm = () => {
             )}
           </div>
         </div>
+        <button
+          type="submit"
+          className={`mt-5 btn btn-md ${
+            isSubmitting ? 'btn-disabled' : 'btn-primary'
+          }`}
+        >
+          Update
+        </button>
       </form>
     </div>
   );
