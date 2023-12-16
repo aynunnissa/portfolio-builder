@@ -1,11 +1,20 @@
+import { portfolioSelector } from '@/store/reducers/portfolio';
+import { INewPortfolio, IPortfolio } from '@/types/user';
+import { useSelector } from 'react-redux';
+
 const PreviewContent = () => {
-  const PortfolioItem = () => {
+  const { portfolios, newPortfolios } = useSelector(portfolioSelector);
+
+  const PortfolioItem = (porto: { data: IPortfolio | INewPortfolio }) => {
+    const portofolioData = porto.data;
     return (
       <div className="rounded shadow p-4">
-        <p className="font-semibold text-md">Front End Developer</p>
-        <p className="font-semibold text-gray-600">MySkill</p>
-        <p className="text-gray-600">Januari 2023 - Desember 2023</p>
-        <p>Deskripsi abcdefgh</p>
+        <p className="font-semibold text-md">{portofolioData.position}</p>
+        <p className="font-semibold text-gray-600">{portofolioData.company}</p>
+        <p className="text-gray-600">
+          {portofolioData.startDate} - {portofolioData.endDate}
+        </p>
+        <p>{portofolioData.description}</p>
       </div>
     );
   };
@@ -19,11 +28,16 @@ const PreviewContent = () => {
       </div>
       <div className="preview-portfolio flex flex-col gap-3">
         <p className="font-bold">Portofolio</p>
-        <PortfolioItem />
-        <PortfolioItem />
-        <PortfolioItem />
-        <PortfolioItem />
-        <PortfolioItem />
+        {portfolios.map((porto, ind) => (
+          <div key={`portofolio-${ind}`}>
+            <PortfolioItem data={porto} />
+          </div>
+        ))}
+        {newPortfolios.map((porto, ind) => (
+          <div key={`newPortofolio-${ind}`}>
+            <PortfolioItem data={porto} />
+          </div>
+        ))}
       </div>
     </div>
   );
