@@ -1,8 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IPortfolio } from '@/types/user';
 
+interface IExistPortfolioObject extends IPortfolio {
+  changed: boolean;
+}
+
 interface IExistPortfolio {
-  [key: string]: Object;
+  [key: string]: IExistPortfolioObject;
 }
 
 interface IProductState {
@@ -15,6 +19,17 @@ const initialState: IProductState = {
   existingPortfolios: {},
   portfolios: [],
   totalChanged: 0,
+};
+
+const isPortfolioEqual = (prevPort: IPortfolio, newPort: IPortfolio) => {
+  return (
+    prevPort.name !== newPort.name ||
+    prevPort.company !== newPort.company ||
+    prevPort.position !== newPort.position ||
+    prevPort.startDate !== newPort.startDate ||
+    prevPort.endDate !== newPort.endDate ||
+    prevPort.description !== newPort.description
+  );
 };
 
 const portfolioSlice = createSlice({
@@ -41,10 +56,42 @@ const portfolioSlice = createSlice({
         existingPortfolios: { ...objectPortfolios },
       };
     },
+    updatePortfolio: (state, action: PayloadAction<IPortfolio>) => {
+      // Update portfolio value
+      const updatedPortfolios = [...state.portfolios];
+      const portfolioInd = updatedPortfolios.findIndex(
+        portfolio => portfolio.id === action.payload.id
+      );
+      updatedPortfolios[portfolioInd] = action.payload;
+
+      // Handle changes
+      const existPortObj = { ...state.existingPortfolios[action.payload.id] };
+
+      const newPort = action.payload;
+      const isChanged = isPortfolioEqual(existPortObj, newPort);
+
+      let currentTotalChanges = state.totalChanged;
+      if (isChanged && !existPortObj.changed) {
+        currentTotalChanges++;
+      } else if (!isChanged && existPortObj.changed) {
+        currentTotalChanges--;
+      }
+      existPortObj.changed = isChanged;
+
+      return {
+        ...state,
+        totalChanged: currentTotalChanges,
+        portfolios: [...updatedPortfolios],
+        existingPortfolios: {
+          ...state.existingPortfolios,
+          [action.payload.id]: existPortObj,
+        },
+      };
+    },
   },
 });
 
-export const { loadPortfolio } = portfolioSlice.actions;
+export const { loadPortfolio, updatePortfolio } = portfolioSlice.actions;
 
 export default portfolioSlice.reducer;
 

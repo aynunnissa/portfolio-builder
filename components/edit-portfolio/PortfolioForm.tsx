@@ -5,13 +5,19 @@ import { IResponse } from '@/types/client';
 import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import useInput from '@/hooks/use-input';
 import { IPortfolio } from '@/types/user';
+import { useDispatch, useSelector } from 'react-redux';
+import { portfolioSelector, updatePortfolio } from '@/store/reducers/portfolio';
 
 // const notEmptyValidation = /^[a-zA-Z0-9\s]*$/;
 
 const PortfolioForm = ({ portfolio }: { portfolio: IPortfolio }) => {
   const isInitialLoad = useRef(true);
+  const dispatch = useDispatch();
   const [userId, setUserId] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { portfolios, totalChanged, existingPortfolios } =
+    useSelector(portfolioSelector);
+  console.log(totalChanged);
 
   const {
     value: enteredName,
@@ -67,11 +73,30 @@ const PortfolioForm = ({ portfolio }: { portfolio: IPortfolio }) => {
     inputBlurHandler: descBlurHandler,
   } = useInput((value: string) => value !== '');
 
+  const handleChange = (
+    event:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLTextAreaElement>,
+    field:
+      | 'name'
+      | 'position'
+      | 'company'
+      | 'startDate'
+      | 'endDate'
+      | 'description'
+  ) => {
+    console.log('masuk');
+    const newObj = { ...portfolio };
+    newObj[field] = event.target.value;
+    dispatch(updatePortfolio(newObj));
+  };
+
   useEffect(() => {
     if (isInitialLoad.current && portfolio) {
       setDefaultName(portfolio.name);
       setDefaultPosition(portfolio.position);
       setDefaultCompany(portfolio.company);
+      console.log('keload');
       setDefaultStartDate(portfolio.startDate);
       setDefaultEndDate(portfolio.endDate);
       setDefaultDesc(portfolio.description);
@@ -96,8 +121,11 @@ const PortfolioForm = ({ portfolio }: { portfolio: IPortfolio }) => {
             <input
               type="text"
               id="portfolio-name"
+              onChange={e => {
+                handleChange(e, 'name');
+                nameChangedHandler(e);
+              }}
               className="form-input"
-              onChange={nameChangedHandler}
               onBlur={nameBlurHandler}
               value={enteredName}
               placeholder="Nama"
@@ -111,8 +139,11 @@ const PortfolioForm = ({ portfolio }: { portfolio: IPortfolio }) => {
             <input
               type="text"
               id="portfolio-position"
+              onChange={e => {
+                handleChange(e, 'position');
+                positionChangedHandler(e);
+              }}
               className="form-input"
-              onChange={positionChangedHandler}
               onBlur={positionBlurHandler}
               value={enteredPosition}
               placeholder="Posisi"
@@ -126,8 +157,11 @@ const PortfolioForm = ({ portfolio }: { portfolio: IPortfolio }) => {
             <input
               type="text"
               id="portfolio-company"
+              onChange={e => {
+                handleChange(e, 'company');
+                companyChangedHandler(e);
+              }}
               className="form-input"
-              onChange={companyChangedHandler}
               onBlur={companyBlurHandler}
               value={enteredCompany}
               placeholder="Perusahaan"
@@ -141,8 +175,11 @@ const PortfolioForm = ({ portfolio }: { portfolio: IPortfolio }) => {
             <input
               type="date"
               id="portfolio-start-date"
+              onChange={e => {
+                handleChange(e, 'startDate');
+                startDateChangedHandler(e);
+              }}
               className="form-input"
-              onChange={startDateChangedHandler}
               onBlur={startDateBlurHandler}
               value={enteredStartDate}
               placeholder="Tanggal Mulai"
@@ -156,8 +193,11 @@ const PortfolioForm = ({ portfolio }: { portfolio: IPortfolio }) => {
             <input
               type="date"
               id="portfolio-end-date"
+              onChange={e => {
+                handleChange(e, 'endDate');
+                endDateChangedHandler(e);
+              }}
               className="form-input"
-              onChange={endDateChangedHandler}
               onBlur={endDateBlurHandler}
               value={enteredEndDate}
               placeholder="Tanggal Selesai"
@@ -170,8 +210,11 @@ const PortfolioForm = ({ portfolio }: { portfolio: IPortfolio }) => {
           <div className="portfolio-field">
             <textarea
               id="portfolio-desc"
+              onChange={e => {
+                handleChange(e, 'description');
+                descChangedHandler(e);
+              }}
               className="form-input"
-              onChange={descChangedHandler}
               onBlur={descBlurHandler}
               placeholder="Deskripsi"
               value={enteredDesc}
@@ -183,14 +226,6 @@ const PortfolioForm = ({ portfolio }: { portfolio: IPortfolio }) => {
             )}
           </div>
         </div>
-        <button
-          type="submit"
-          className={`mt-5 btn btn-md ${
-            isSubmitting ? 'btn-disabled' : 'btn-primary'
-          }`}
-        >
-          Update
-        </button>
       </form>
     </div>
   );

@@ -136,14 +136,6 @@ const ProfileForm = () => {
             )}
           </div>
         </div>
-        <button
-          type="submit"
-          className={`mt-5 btn btn-md ${
-            isSubmitting ? 'btn-disabled' : 'btn-primary'
-          }`}
-        >
-          Update
-        </button>
       </form>
     </div>
   );
