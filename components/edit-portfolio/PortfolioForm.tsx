@@ -16,18 +16,14 @@ import {
 
 const PortfolioForm = ({
   portfolio,
-  newPortfolio,
+  deleteHandler,
 }: {
-  portfolio?: IPortfolio;
-  newPortfolio?: INewPortfolio;
+  portfolio: IPortfolio;
+  deleteHandler: () => void;
 }) => {
   const isInitialLoad = useRef(true);
   const dispatch = useDispatch();
   const [userId, setUserId] = useState(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { portfolios, totalChanged, existingPortfolios, newPortfolios } =
-    useSelector(portfolioSelector);
-  console.log(newPortfolios);
 
   const {
     value: enteredName,
@@ -95,19 +91,13 @@ const PortfolioForm = ({
       | 'endDate'
       | 'description'
   ) => {
-    if (portfolio && portfolio.id) {
-      const newObj = { ...portfolio };
-      newObj[field] = event.target.value;
-      dispatch(updatePortfolio(newObj));
-    } else if (newPortfolio && newPortfolio.index !== undefined) {
-      const newObj = { ...newPortfolio };
-      newObj[field] = event.target.value;
-      dispatch(updateNewPortfolio(newObj));
-    }
+    const newObj = { ...portfolio };
+    newObj[field] = event.target.value;
+    dispatch(updatePortfolio(newObj));
   };
 
   useEffect(() => {
-    if (isInitialLoad.current && portfolio) {
+    if (isInitialLoad.current) {
       setDefaultName(portfolio.name);
       setDefaultPosition(portfolio.position);
       setDefaultCompany(portfolio.company);
@@ -127,7 +117,14 @@ const PortfolioForm = ({
   ]);
 
   return (
-    <div>
+    <div className="relative px-2 pt-10">
+      <button
+        type="button"
+        className="btn btn-md absolute top-0 end-0"
+        onClick={deleteHandler}
+      >
+        Remove
+      </button>
       <h4 className="text-bold text-underline">Profile</h4>
       <div className="flex flex-col gap-y-4">
         <div className="portfolio-field">

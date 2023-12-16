@@ -13,6 +13,7 @@ interface IProductState {
   existingPortfolios: IExistPortfolio;
   portfolios: IPortfolio[];
   newPortfolios: INewPortfolio[];
+  idDeletedPortfolios: string[];
   totalChanged: number;
 }
 
@@ -20,6 +21,7 @@ const initialState: IProductState = {
   existingPortfolios: {},
   portfolios: [],
   newPortfolios: [],
+  idDeletedPortfolios: [],
   totalChanged: 0,
 };
 
@@ -90,15 +92,29 @@ const portfolioSlice = createSlice({
         },
       };
     },
+    deletePortfolio: (state, action: PayloadAction<string>) => {
+      const portofolios = [
+        ...state.portfolios.filter(porto => porto.id !== action.payload),
+      ];
+      const deletedPortfolios = [...state.idDeletedPortfolios, action.payload];
+      const existingPortfo = { ...state.existingPortfolios };
+      delete existingPortfo[action.payload];
+
+      return {
+        ...state,
+        portfolios: portofolios,
+        idDeletedPortfolios: deletedPortfolios,
+        existingPortfolios: existingPortfo,
+      };
+    },
     addNewPortfolio: (state, action: PayloadAction<INewPortfolio>) => {
       const newPortos = [...state.newPortfolios];
-      const newInd: number = newPortos.length;
+      // const newInd: number = newPortos.length;
       const newPortData = action.payload;
       let currentTotalChanges = state.totalChanged;
       currentTotalChanges++;
-      newPortData.index = newInd;
+      // newPortData.index = newInd;
       newPortos.push(newPortData);
-      console.log(newPortos);
 
       return {
         ...state,
@@ -106,18 +122,30 @@ const portfolioSlice = createSlice({
         totalChanged: currentTotalChanges,
       };
     },
-    updateNewPortfolio: (state, action: PayloadAction<INewPortfolio>) => {
-      console.log('manggil');
+    updateNewPortfolio: (
+      state,
+      action: PayloadAction<{ portfolio: INewPortfolio; index: number }>
+    ) => {
       const newPortos = [...state.newPortfolios];
-      if (action.payload.index !== undefined) {
-        const updatedInd: number = action.payload.index;
-        const newPortData = action.payload;
-        newPortos[updatedInd] = newPortData;
-      }
+      const data = action.payload;
+      console.error(`Index: ${data.index}`);
+      const updatedInd: number = action.payload.index;
+      const newPortData = action.payload.portfolio;
+      newPortos[updatedInd] = newPortData;
 
       return {
         ...state,
         newPortfolios: newPortos,
+      };
+    },
+    deleteNewPortfolio: (state, action: PayloadAction<number>) => {
+      let newPortos = [...state.newPortfolios];
+      newPortos.splice(action.payload, 1);
+      let currentTotalChanges = state.totalChanged - 1;
+      return {
+        ...state,
+        newPortfolios: newPortos.slice(),
+        totalChanged: currentTotalChanges,
       };
     },
   },
@@ -128,6 +156,8 @@ export const {
   updatePortfolio,
   addNewPortfolio,
   updateNewPortfolio,
+  deletePortfolio,
+  deleteNewPortfolio,
 } = portfolioSlice.actions;
 
 export default portfolioSlice.reducer;
