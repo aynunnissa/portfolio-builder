@@ -1,3 +1,15 @@
+## How To Access
+This website can be accessed on [Portfolio Builder](https://portfolio-builder-one.vercel.app/)
+
+## Technology Stack
+- NextJS
+- Typescript
+- Redux
+- Css pre-processor & Tailwind
+
+## Data & API
+I use https://mockapi.io/ for saving data. There are two tables: users and portfolios. One user is associated with many portfolios. Because there's no authentication, the default user is a user whose id = 1. 
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
