@@ -1,9 +1,11 @@
 import { portfolioSelector } from '@/store/reducers/portfolio';
+import { profileSelector } from '@/store/reducers/profile';
 import { INewPortfolio, IPortfolio } from '@/types/user';
 import { useSelector } from 'react-redux';
 
 const PreviewContent = () => {
   const { portfolios, newPortfolios } = useSelector(portfolioSelector);
+  const profileData = useSelector(profileSelector);
 
   const PortfolioItem = (porto: { data: IPortfolio | INewPortfolio }) => {
     const portofolioData = porto.data;
@@ -22,9 +24,9 @@ const PreviewContent = () => {
   return (
     <div className="p-6">
       <div className="preview-profile text-center">
-        <p className="text-lg font-bold">Nama</p>
-        <p className="text-md font-bold text-gray-600">Title</p>
-        <p className="text-gray-900">Hello, its me!</p>
+        <p className="text-lg font-bold">{profileData.name}</p>
+        <p className="text-md font-bold text-gray-600">{profileData.title}</p>
+        <p className="text-gray-900">{profileData.description}</p>
       </div>
       <div className="preview-portfolio flex flex-col gap-3">
         <p className="font-bold">Portofolio</p>
