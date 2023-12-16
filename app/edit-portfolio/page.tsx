@@ -19,6 +19,7 @@ import { profileSelector } from '@/store/reducers/profile';
 import { IResponse } from '@/types/client';
 import axios from 'axios';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -129,6 +130,15 @@ const EditPortfolioPage = () => {
 
   return (
     <>
+      <Head>
+        <title>Edit Portfolio</title>
+        <meta
+          name="description"
+          content="Keep your portfolio accurate and up-to-date with ease"
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/kakaoico.ico" />
+      </Head>
       <div className="flex gap-4">
         <div className="flex flex-col gap-4 w-full md:w-[55%]">
           <div className="flex gap-4">
