@@ -14,3 +14,17 @@ export const updatePortfolio = (portfolio: IPortfolio) => {
     payload: portfolio,
   };
 };
+
+export const addNewPortfolio = (portfolio: IPortfolio) => {
+  return {
+    type: actionTypes.ADD_NEW_PORTFOLIO,
+    payload: portfolio,
+  };
+};
+
+export const updateNewPortfolio = (portfolio: IPortfolio) => {
+  return {
+    type: actionTypes.UPDATE_NEW_PORTFOLIO,
+    payload: portfolio,
+  };
+};

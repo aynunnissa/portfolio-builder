@@ -4,20 +4,30 @@ import { client } from '@/lib/client';
 import { IResponse } from '@/types/client';
 import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import useInput from '@/hooks/use-input';
-import { IPortfolio } from '@/types/user';
+import { INewPortfolio, IPortfolio } from '@/types/user';
 import { useDispatch, useSelector } from 'react-redux';
-import { portfolioSelector, updatePortfolio } from '@/store/reducers/portfolio';
+import {
+  portfolioSelector,
+  updateNewPortfolio,
+  updatePortfolio,
+} from '@/store/reducers/portfolio';
 
 // const notEmptyValidation = /^[a-zA-Z0-9\s]*$/;
 
-const PortfolioForm = ({ portfolio }: { portfolio: IPortfolio }) => {
+const PortfolioForm = ({
+  portfolio,
+  newPortfolio,
+}: {
+  portfolio?: IPortfolio;
+  newPortfolio?: INewPortfolio;
+}) => {
   const isInitialLoad = useRef(true);
   const dispatch = useDispatch();
   const [userId, setUserId] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { portfolios, totalChanged, existingPortfolios } =
+  const { portfolios, totalChanged, existingPortfolios, newPortfolios } =
     useSelector(portfolioSelector);
-  console.log(totalChanged);
+  console.log(newPortfolios);
 
   const {
     value: enteredName,
@@ -85,10 +95,15 @@ const PortfolioForm = ({ portfolio }: { portfolio: IPortfolio }) => {
       | 'endDate'
       | 'description'
   ) => {
-    console.log('masuk');
-    const newObj = { ...portfolio };
-    newObj[field] = event.target.value;
-    dispatch(updatePortfolio(newObj));
+    if (portfolio && portfolio.id) {
+      const newObj = { ...portfolio };
+      newObj[field] = event.target.value;
+      dispatch(updatePortfolio(newObj));
+    } else if (newPortfolio && newPortfolio.index !== undefined) {
+      const newObj = { ...newPortfolio };
+      newObj[field] = event.target.value;
+      dispatch(updateNewPortfolio(newObj));
+    }
   };
 
   useEffect(() => {
@@ -96,7 +111,6 @@ const PortfolioForm = ({ portfolio }: { portfolio: IPortfolio }) => {
       setDefaultName(portfolio.name);
       setDefaultPosition(portfolio.position);
       setDefaultCompany(portfolio.company);
-      console.log('keload');
       setDefaultStartDate(portfolio.startDate);
       setDefaultEndDate(portfolio.endDate);
       setDefaultDesc(portfolio.description);
@@ -115,118 +129,116 @@ const PortfolioForm = ({ portfolio }: { portfolio: IPortfolio }) => {
   return (
     <div>
       <h4 className="text-bold text-underline">Profile</h4>
-      <form className="portolio-form mt-4">
-        <div className="flex flex-col gap-y-4">
-          <div className="portfolio-field">
-            <input
-              type="text"
-              id="portfolio-name"
-              onChange={e => {
-                handleChange(e, 'name');
-                nameChangedHandler(e);
-              }}
-              className="form-input"
-              onBlur={nameBlurHandler}
-              value={enteredName}
-              placeholder="Nama"
-              required
-            />
-            {nameInputHasError && (
-              <p className="text-red-800">Nama harus diisi</p>
-            )}
-          </div>
-          <div className="portfolio-field">
-            <input
-              type="text"
-              id="portfolio-position"
-              onChange={e => {
-                handleChange(e, 'position');
-                positionChangedHandler(e);
-              }}
-              className="form-input"
-              onBlur={positionBlurHandler}
-              value={enteredPosition}
-              placeholder="Posisi"
-              required
-            />
-            {positionInputHasError && (
-              <p className="text-red-800">Position harus diisi</p>
-            )}
-          </div>
-          <div className="portfolio-field">
-            <input
-              type="text"
-              id="portfolio-company"
-              onChange={e => {
-                handleChange(e, 'company');
-                companyChangedHandler(e);
-              }}
-              className="form-input"
-              onBlur={companyBlurHandler}
-              value={enteredCompany}
-              placeholder="Perusahaan"
-              required
-            />
-            {companyInputHasError && (
-              <p className="text-red-800">Perusahaan harus diisi</p>
-            )}
-          </div>
-          <div className="portfolio-field">
-            <input
-              type="date"
-              id="portfolio-start-date"
-              onChange={e => {
-                handleChange(e, 'startDate');
-                startDateChangedHandler(e);
-              }}
-              className="form-input"
-              onBlur={startDateBlurHandler}
-              value={enteredStartDate}
-              placeholder="Tanggal Mulai"
-              required
-            />
-            {startDateInputHasError && (
-              <p className="text-red-800">Tanggal Mulai harus diisi</p>
-            )}
-          </div>
-          <div className="portfolio-field">
-            <input
-              type="date"
-              id="portfolio-end-date"
-              onChange={e => {
-                handleChange(e, 'endDate');
-                endDateChangedHandler(e);
-              }}
-              className="form-input"
-              onBlur={endDateBlurHandler}
-              value={enteredEndDate}
-              placeholder="Tanggal Selesai"
-              required
-            />
-            {endDateInputHasError && (
-              <p className="text-red-800">Tanggal Selesai harus diisi</p>
-            )}
-          </div>
-          <div className="portfolio-field">
-            <textarea
-              id="portfolio-desc"
-              onChange={e => {
-                handleChange(e, 'description');
-                descChangedHandler(e);
-              }}
-              className="form-input"
-              onBlur={descBlurHandler}
-              placeholder="Deskripsi"
-              value={enteredDesc}
-              rows={4}
-              required
-            ></textarea>
-            {descInputHasError && (
-              <p className="text-red-800">Deskripsi harus diisi</p>
-            )}
-          </div>
+      <div className="flex flex-col gap-y-4">
+        <div className="portfolio-field">
+          <input
+            type="text"
+            id="portfolio-name"
+            onChange={e => {
+              handleChange(e, 'name');
+              nameChangedHandler(e);
+            }}
+            className="form-input"
+            onBlur={nameBlurHandler}
+            value={enteredName}
+            placeholder="Nama"
+            required
+          />
+          {nameInputHasError && (
+            <p className="text-red-800">Nama harus diisi</p>
+          )}
         </div>
-      </form>
+        <div className="portfolio-field">
+          <input
+            type="text"
+            id="portfolio-position"
+            onChange={e => {
+              handleChange(e, 'position');
+              positionChangedHandler(e);
+            }}
+            className="form-input"
+            onBlur={positionBlurHandler}
+            value={enteredPosition}
+            placeholder="Posisi"
+            required
+          />
+          {positionInputHasError && (
+            <p className="text-red-800">Position harus diisi</p>
+          )}
+        </div>
+        <div className="portfolio-field">
+          <input
+            type="text"
+            id="portfolio-company"
+            onChange={e => {
+              handleChange(e, 'company');
+              companyChangedHandler(e);
+            }}
+            className="form-input"
+            onBlur={companyBlurHandler}
+            value={enteredCompany}
+            placeholder="Perusahaan"
+            required
+          />
+          {companyInputHasError && (
+            <p className="text-red-800">Perusahaan harus diisi</p>
+          )}
+        </div>
+        <div className="portfolio-field">
+          <input
+            type="date"
+            id="portfolio-start-date"
+            onChange={e => {
+              handleChange(e, 'startDate');
+              startDateChangedHandler(e);
+            }}
+            className="form-input"
+            onBlur={startDateBlurHandler}
+            value={enteredStartDate}
+            placeholder="Tanggal Mulai"
+            required
+          />
+          {startDateInputHasError && (
+            <p className="text-red-800">Tanggal Mulai harus diisi</p>
+          )}
+        </div>
+        <div className="portfolio-field">
+          <input
+            type="date"
+            id="portfolio-end-date"
+            onChange={e => {
+              handleChange(e, 'endDate');
+              endDateChangedHandler(e);
+            }}
+            className="form-input"
+            onBlur={endDateBlurHandler}
+            value={enteredEndDate}
+            placeholder="Tanggal Selesai"
+            required
+          />
+          {endDateInputHasError && (
+            <p className="text-red-800">Tanggal Selesai harus diisi</p>
+          )}
+        </div>
+        <div className="portfolio-field">
+          <textarea
+            id="portfolio-desc"
+            onChange={e => {
+              handleChange(e, 'description');
+              descChangedHandler(e);
+            }}
+            className="form-input"
+            onBlur={descBlurHandler}
+            placeholder="Deskripsi"
+            value={enteredDesc}
+            rows={4}
+            required
+          ></textarea>
+          {descInputHasError && (
+            <p className="text-red-800">Deskripsi harus diisi</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IPortfolio } from '@/types/user';
+import { INewPortfolio, IPortfolio } from '@/types/user';
 
 interface IExistPortfolioObject extends IPortfolio {
   changed: boolean;
@@ -12,12 +12,14 @@ interface IExistPortfolio {
 interface IProductState {
   existingPortfolios: IExistPortfolio;
   portfolios: IPortfolio[];
+  newPortfolios: INewPortfolio[];
   totalChanged: number;
 }
 
 const initialState: IProductState = {
   existingPortfolios: {},
   portfolios: [],
+  newPortfolios: [],
   totalChanged: 0,
 };
 
@@ -88,10 +90,45 @@ const portfolioSlice = createSlice({
         },
       };
     },
+    addNewPortfolio: (state, action: PayloadAction<INewPortfolio>) => {
+      const newPortos = [...state.newPortfolios];
+      const newInd: number = newPortos.length;
+      const newPortData = action.payload;
+      let currentTotalChanges = state.totalChanged;
+      currentTotalChanges++;
+      newPortData.index = newInd;
+      newPortos.push(newPortData);
+      console.log(newPortos);
+
+      return {
+        ...state,
+        newPortfolios: newPortos,
+        totalChanged: currentTotalChanges,
+      };
+    },
+    updateNewPortfolio: (state, action: PayloadAction<INewPortfolio>) => {
+      console.log('manggil');
+      const newPortos = [...state.newPortfolios];
+      if (action.payload.index !== undefined) {
+        const updatedInd: number = action.payload.index;
+        const newPortData = action.payload;
+        newPortos[updatedInd] = newPortData;
+      }
+
+      return {
+        ...state,
+        newPortfolios: newPortos,
+      };
+    },
   },
 });
 
-export const { loadPortfolio, updatePortfolio } = portfolioSlice.actions;
+export const {
+  loadPortfolio,
+  updatePortfolio,
+  addNewPortfolio,
+  updateNewPortfolio,
+} = portfolioSlice.actions;
 
 export default portfolioSlice.reducer;
 
