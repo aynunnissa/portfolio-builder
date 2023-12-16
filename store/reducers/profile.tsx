@@ -22,10 +22,13 @@ const profileSlice = createSlice({
   reducers: {
     loadProfile: (state, action: PayloadAction<IProfileState>) => {
       const profile: IProfileState = action.payload;
-
+      const bgImage = localStorage.getItem('bgImage') ?? '';
+      const profileImage = localStorage.getItem('profileImage') ?? '';
       return {
         ...state,
         ...profile,
+        bgImage,
+        profileImage,
       };
     },
     updateProfile: (state, action: PayloadAction<IProfileState>) => {
@@ -36,10 +39,29 @@ const profileSlice = createSlice({
         ...updatedProfile,
       };
     },
+    updateBGImage: (state, action: PayloadAction<string>) => {
+      const bgImage = action.payload;
+      localStorage.setItem('bgImage', bgImage);
+
+      return {
+        ...state,
+        bgImage,
+      };
+    },
+    updateProfileImage: (state, action: PayloadAction<string>) => {
+      const profileImage = action.payload;
+      localStorage.setItem('profileImage', profileImage);
+
+      return {
+        ...state,
+        profileImage,
+      };
+    },
   },
 });
 
-export const { loadProfile, updateProfile } = profileSlice.actions;
+export const { loadProfile, updateProfile, updateBGImage, updateProfileImage } =
+  profileSlice.actions;
 
 export default profileSlice.reducer;
 

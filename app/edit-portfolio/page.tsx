@@ -3,9 +3,7 @@
 import ImageUpload from '@/components/edit-portfolio/ImageUpload';
 import NewPortfolioForm from '@/components/edit-portfolio/NewPortfolioForm';
 import PortfolioForm from '@/components/edit-portfolio/PortfolioForm';
-import PreviewButton from '@/components/edit-portfolio/PreviewButton';
 import PreviewContent from '@/components/edit-portfolio/PreviewContent';
-import PreviewModal from '@/components/edit-portfolio/PreviewModal';
 import ProfileForm from '@/components/edit-portfolio/ProfileForm';
 import { client } from '@/lib/client';
 import {
@@ -15,11 +13,11 @@ import {
   loadPortfolio,
   portfolioSelector,
 } from '@/store/reducers/portfolio';
+import { profileSelector } from '@/store/reducers/profile';
 import { IResponse } from '@/types/client';
-import { INewPortfolio, IPortfolio } from '@/types/user';
 import axios from 'axios';
 import dynamic from 'next/dynamic';
-import { FormEventHandler, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 const ModalPreviewComponent = dynamic(
@@ -39,6 +37,8 @@ const EditPortfolioPage = () => {
     newPortfolios,
     existingPortfolios,
   } = useSelector(portfolioSelector);
+
+  const dataProfile = useSelector(profileSelector);
 
   const getInitialData = useCallback(async () => {
     const { data, error }: IResponse = await client.get({
@@ -76,14 +76,22 @@ const EditPortfolioPage = () => {
     );
 
     axios
-      .all(
-        editedPortfolio.map(editedPort =>
+      .all([
+        ...editedPortfolio.map(editedPort =>
           client.put({
             url: `/users/1/portfolios/${editedPort.id}`,
             data: editedPort,
           })
-        )
-      )
+        ),
+        client.put({
+          url: '/users/1',
+          data: {
+            name: dataProfile.name,
+            title: dataProfile.title,
+            description: dataProfile.description,
+          },
+        }),
+      ])
       .then(data => console.log(data));
 
     axios
