@@ -12,15 +12,13 @@ import {
   addNewPortfolio,
   deleteNewPortfolio,
   deletePortfolio,
-  loadPortfolio,
   portfolioSelector,
 } from '@/store/reducers/portfolio';
 import { profileSelector } from '@/store/reducers/profile';
-import { IResponse } from '@/types/client';
 import axios from 'axios';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 const ModalPreviewComponent = dynamic(

@@ -112,11 +112,9 @@ const portfolioSlice = createSlice({
     },
     addNewPortfolio: (state, action: PayloadAction<INewPortfolio>) => {
       const newPortos = [...state.newPortfolios];
-      // const newInd: number = newPortos.length;
       const newPortData = action.payload;
       let currentTotalChanges = state.totalChanged;
       currentTotalChanges++;
-      // newPortData.index = newInd;
       newPortos.push(newPortData);
 
       return {

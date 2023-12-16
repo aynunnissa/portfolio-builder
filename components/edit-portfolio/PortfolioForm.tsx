@@ -1,23 +1,14 @@
 'use client';
 
-import { client } from '@/lib/client';
-import { IResponse } from '@/types/client';
-import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useInput from '@/hooks/use-input';
-import { INewPortfolio, IPortfolio } from '@/types/user';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  portfolioSelector,
-  updateNewPortfolio,
-  updatePortfolio,
-} from '@/store/reducers/portfolio';
-
-// const notEmptyValidation = /^[a-zA-Z0-9\s]*$/;
+import { IPortfolio } from '@/types/user';
+import { useDispatch } from 'react-redux';
+import { updatePortfolio } from '@/store/reducers/portfolio';
 
 const PortfolioForm = ({ portfolio }: { portfolio: IPortfolio }) => {
   const isInitialLoad = useRef(true);
   const dispatch = useDispatch();
-  const [userId, setUserId] = useState(null);
 
   const {
     value: enteredName,

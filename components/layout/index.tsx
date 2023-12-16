@@ -18,7 +18,6 @@ const Layout = ({ children }: { children: ReactNode }) => {
     });
 
     if (data) {
-      // setPortfolios(data);
       dispatch(loadPortfolio(data));
     }
   }, [dispatch]);
