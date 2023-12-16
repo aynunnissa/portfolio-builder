@@ -1,6 +1,7 @@
 import { portfolioSelector } from '@/store/reducers/portfolio';
 import { profileSelector } from '@/store/reducers/profile';
 import { INewPortfolio, IPortfolio } from '@/types/user';
+import Image from 'next/image';
 import { useSelector } from 'react-redux';
 
 const PreviewContent = () => {
@@ -23,6 +24,34 @@ const PreviewContent = () => {
 
   return (
     <div className="p-6">
+      <div className="preview-image">
+        <p>Background:</p>
+        {profileData.bgImage ? (
+          <Image
+            src={profileData.bgImage}
+            width={0}
+            height={0}
+            className="w-full h-[100px] object-cover"
+            alt="Portofolio Image Background"
+          />
+        ) : (
+          <p>No image</p>
+        )}
+      </div>
+      <div className="preview-image">
+        <p>Avatar:</p>
+        {profileData.profileImage ? (
+          <Image
+            src={profileData.profileImage}
+            width={30}
+            height={30}
+            className="object-cover"
+            alt="Portofolio Avatar Image"
+          />
+        ) : (
+          <p>No image</p>
+        )}
+      </div>
       <div className="preview-profile text-center">
         <p className="text-lg font-bold">{profileData.name}</p>
         <p className="text-md font-bold text-gray-600">{profileData.title}</p>
