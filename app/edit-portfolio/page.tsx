@@ -19,8 +19,13 @@ import { useDispatch, useSelector } from 'react-redux';
 
 const EditPortfolioPage = () => {
   const dispatch = useDispatch();
-  const { portfolios, totalChanged, idDeletedPortfolios, newPortfolios } =
-    useSelector(portfolioSelector);
+  const {
+    portfolios,
+    totalChanged,
+    idDeletedPortfolios,
+    newPortfolios,
+    existingPortfolios,
+  } = useSelector(portfolioSelector);
 
   const getInitialData = useCallback(async () => {
     const { data, error }: IResponse = await client.get({
@@ -52,6 +57,21 @@ const EditPortfolioPage = () => {
 
   const submitNewPortfolioData = () => {
     const url = '/users/1/portfolios';
+
+    const editedPortfolio = portfolios.filter(
+      porto => existingPortfolios[porto.id].changed
+    );
+
+    axios
+      .all(
+        editedPortfolio.map(editedPort =>
+          client.put({
+            url: `/users/1/portfolios/${editedPort.id}`,
+            data: editedPort,
+          })
+        )
+      )
+      .then(data => console.log(data));
 
     axios
       .all(newPortfolios.map(newPort => client.post({ url, data: newPort })))
