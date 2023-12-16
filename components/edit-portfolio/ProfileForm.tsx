@@ -12,10 +12,8 @@ import {
 } from '@/store/reducers/profile';
 
 const ProfileForm = () => {
-  const isInitialLoad = useRef(true);
+  const { profile } = useSelector(profileSelector);
   const dispatch = useDispatch();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const profile = useSelector(profileSelector);
 
   const {
     value: enteredName,
@@ -44,57 +42,11 @@ const ProfileForm = () => {
     inputBlurHandler: descBlurHandler,
   } = useInput((value: string) => value !== '');
 
-  // const updateProfileData = async (event: MouseEvent<HTMLButtonElemen>) => {
-  //   event.preventDefault();
-  //   if (!userId) {
-  //     console.log('User not found');
-  //     return;
-  //   }
-
-  //   setIsSubmitting(true);
-
-  //   const { data, error }: IResponse = await client.put({
-  //     url: `/users/${userId}`,
-  //     data: {
-  //       name: enteredName,
-  //       title: enteredTitle,
-  //       description: enteredDesc,
-  //     },
-  //   });
-
-  //   setIsSubmitting(false);
-
-  //   if (data) {
-  //     setDefaultName(data.name);
-  //     setDefaultTitle(data.title);
-  //     setDefaultDesc(data.description);
-  //   }
-  // };
-
-  // const fetchInitialProfile = useCallback(async () => {
-  //   if (isInitialLoad.current) {
-  //     const { data, error }: IResponse = await client.get({ url: '/users' });
-  //     if (data) {
-  //       const profileData = data[0];
-  //       setUserId(profileData.id);
-  //       setDefaultName(profileData.name);
-  //       setDefaultTitle(profileData.title);
-  //       setDefaultDesc(profileData.description);
-
-  //       dispatch(loadProfile(profileData));
-  //     }
-  //     isInitialLoad.current = false;
-  //   }
-  // }, [setDefaultName, setDefaultTitle, setDefaultDesc, dispatch]);
-
   useEffect(() => {
-    if (isInitialLoad.current && profile) {
-      setDefaultName(profile.name);
-      setDefaultTitle(profile.title);
-      setDefaultDesc(profile.description);
-      isInitialLoad.current = false;
-    }
-  }, [setDefaultName, setDefaultTitle, setDefaultDesc, profile]);
+    setDefaultName(profile.name);
+    setDefaultTitle(profile.title);
+    setDefaultDesc(profile.description);
+  }, [profile]);
 
   const handleChange = (
     event:

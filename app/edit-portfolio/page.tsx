@@ -39,7 +39,8 @@ const EditPortfolioPage = () => {
     existingPortfolios,
   } = useSelector(portfolioSelector);
 
-  const dataProfile = useSelector(profileSelector);
+  const { profile: dataProfile, isProfileChanged } =
+    useSelector(profileSelector);
 
   // const getInitialData = useCallback(async () => {
   //   const { data, error }: IResponse = await client.get({
@@ -141,7 +142,9 @@ const EditPortfolioPage = () => {
             <button
               type="submit"
               className={`mt-5 btn btn-md ${
-                totalChanged > 0 ? 'btn-primary' : 'btn-disabled'
+                totalChanged > 0 || isProfileChanged
+                  ? 'btn-primary'
+                  : 'btn-disabled'
               }`}
               onClick={submitNewPortfolioData}
             >
