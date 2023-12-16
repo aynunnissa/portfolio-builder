@@ -6,8 +6,6 @@ import { INewPortfolio } from '@/types/user';
 import { useDispatch } from 'react-redux';
 import { updateNewPortfolio } from '@/store/reducers/portfolio';
 
-// const notEmptyValidation = /^[a-zA-Z0-9\s]*$/;
-
 const NewPortfolioForm = ({
   index,
   newPortfolio,

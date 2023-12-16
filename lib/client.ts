@@ -6,7 +6,6 @@ export const bashUrl = "https://6579c5071acd268f9af9fe02.mockapi.io/api/v1";
 
 
 export function client({ url, method, data, params }: IClient) {
-    // console.log({ ...config, ...authHeader() });
   return axios({
     method: method,
     url: `${bashUrl}${url}`,
@@ -14,7 +13,6 @@ export function client({ url, method, data, params }: IClient) {
     params: { ...params },
   })
     .then(function (response): IResponse {
-        // console.log(response);
       return {
         status: response.status,
         data: response.data,

@@ -12,6 +12,7 @@ interface IState {
   existingProfile: IProfileState;
   profile: IProfileState;
   isProfileChanged: boolean;
+  isLoadingData: boolean;
 }
 
 const initialState: IState = {
@@ -30,6 +31,7 @@ const initialState: IState = {
     profileImage: '',
   },
   isProfileChanged: false,
+  isLoadingData: true,
 };
 
 const profileWasChanged = (
@@ -57,6 +59,7 @@ const profileSlice = createSlice({
         ...state,
         existingProfile: { ...profile, bgImage, profileImage },
         profile: { ...profile, bgImage, profileImage },
+        isLoadingData: false,
       };
     },
     updateProfile: (state, action: PayloadAction<IProfileState>) => {

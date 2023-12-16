@@ -6,19 +6,19 @@ import PortfolioForm from '@/components/edit-portfolio/PortfolioForm';
 import PreviewContent from '@/components/edit-portfolio/PreviewContent';
 import ProfileForm from '@/components/edit-portfolio/ProfileForm';
 import Card from '@/components/shared/Card';
+import Skeleton from '@/components/shared/Skeleton';
 import { client } from '@/lib/client';
 import {
   addNewPortfolio,
   deleteNewPortfolio,
   deletePortfolio,
-  loadPortfolio,
   portfolioSelector,
 } from '@/store/reducers/portfolio';
 import { profileSelector } from '@/store/reducers/profile';
-import { IResponse } from '@/types/client';
 import axios from 'axios';
 import dynamic from 'next/dynamic';
-import { useCallback, useEffect } from 'react';
+import Head from 'next/head';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 const ModalPreviewComponent = dynamic(
@@ -31,31 +31,21 @@ const ModalPreviewComponent = dynamic(
 
 const EditPortfolioPage = () => {
   const dispatch = useDispatch();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     portfolios,
     totalChanged,
     idDeletedPortfolios,
     newPortfolios,
     existingPortfolios,
+    isLoadingData,
   } = useSelector(portfolioSelector);
 
-  const { profile: dataProfile, isProfileChanged } =
-    useSelector(profileSelector);
-
-  // const getInitialData = useCallback(async () => {
-  //   const { data, error }: IResponse = await client.get({
-  //     url: `/users/${1}/portfolios`,
-  //   });
-
-  //   if (data) {
-  //     // setPortfolios(data);
-  //     dispatch(loadPortfolio(data));
-  //   }
-  // }, [dispatch]);
-
-  // useEffect(() => {
-  //   getInitialData();
-  // }, [getInitialData]);
+  const {
+    profile: dataProfile,
+    isProfileChanged,
+    isLoadingData: isLoadingProfile,
+  } = useSelector(profileSelector);
 
   const addNewPortfolioForm = () => {
     dispatch(
@@ -70,7 +60,8 @@ const EditPortfolioPage = () => {
     );
   };
 
-  const submitNewPortfolioData = () => {
+  const submitNewPortfolioData = async () => {
+    setIsSubmitting(true);
     const url = '/users/1/portfolios';
 
     const editedPortfolio = portfolios.filter(
@@ -111,7 +102,9 @@ const EditPortfolioPage = () => {
       ...deletePortfolioRequests,
     ];
 
-    axios.all(allRequest).then(data => console.log(data));
+    await axios.all(allRequest).then(data => console.log(data));
+
+    setIsSubmitting(false);
   };
 
   const deleteExistingPort = (id: string) => {
@@ -124,6 +117,15 @@ const EditPortfolioPage = () => {
 
   return (
     <>
+      <Head>
+        <title>Edit Portfolio</title>
+        <meta
+          name="description"
+          content="Keep your portfolio accurate and up-to-date with ease"
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/kakaoico.ico" />
+      </Head>
       <div className="flex gap-4">
         <div className="flex flex-col gap-4 w-full md:w-[55%]">
           <div className="flex gap-4">
@@ -139,61 +141,86 @@ const EditPortfolioPage = () => {
             >
               + Add portfolio
             </button>
-            <button
-              type="submit"
-              className={`mt-5 btn btn-md ${
-                totalChanged > 0 || isProfileChanged
-                  ? 'btn-primary'
-                  : 'btn-disabled'
-              }`}
-              onClick={submitNewPortfolioData}
-            >
-              Simpan Perubahan
-            </button>
+            {!isSubmitting && (
+              <button
+                type="submit"
+                className={`mt-5 btn btn-md ${
+                  totalChanged > 0 || isProfileChanged
+                    ? 'btn-primary'
+                    : 'btn-disabled'
+                }`}
+                onClick={submitNewPortfolioData}
+              >
+                Simpan Perubahan
+              </button>
+            )}
+            {isSubmitting && (
+              <button type="submit" className="btn-disabled mt-5 btn btn-md">
+                Submitting...
+              </button>
+            )}
           </div>
-          <Card>
-            <ImageUpload field="bgImage" />
-          </Card>
-          <Card>
-            <ImageUpload field="profileImage" />
-          </Card>
-          <Card>
-            <ProfileForm />
-          </Card>
-          {portfolios?.map((portfolio, ind) => (
-            <Card key={`portfolio-${portfolio.id}`}>
-              <div className="relative px-2 pt-4">
-                <button
-                  type="button"
-                  className="btn btn-md absolute top-0 end-0"
-                  onClick={() => deleteExistingPort(portfolio.id)}
-                >
-                  Remove
-                </button>
-                <h4 className="font-bold text-sm underline mb-6">
-                  Portfolio {ind + 1}
-                </h4>
-                <PortfolioForm portfolio={portfolio} />
-              </div>
+          {isLoadingProfile ? (
+            <Skeleton customClass="h-[62px] w-[100%]" rtl={true} />
+          ) : (
+            <Card>
+              <ImageUpload field="bgImage" />
             </Card>
-          ))}
-          {newPortfolios?.map((portfolio, ind) => (
-            <Card key={`newPortfolio-${ind}`}>
-              <div className="relative px-2 pt-4">
-                <button
-                  type="button"
-                  className="btn btn-md absolute top-0 end-0"
-                  onClick={() => onDeletePortofolio(ind)}
-                >
-                  Remove
-                </button>
-                <h4 className="font-bold text-sm underline mb-6">
-                  Portfolio {portfolios.length + ind + 1}
-                </h4>
-                <NewPortfolioForm newPortfolio={portfolio} index={ind} />
-              </div>
+          )}
+          {isLoadingProfile ? (
+            <Skeleton customClass="h-[62px] w-[100%]" rtl={true} />
+          ) : (
+            <Card>
+              <ImageUpload field="profileImage" />
             </Card>
-          ))}
+          )}
+
+          {isLoadingProfile ? (
+            <Skeleton customClass="h-[150px] w-[100%]" rtl={true} />
+          ) : (
+            <Card>
+              <ProfileForm />
+            </Card>
+          )}
+          {isLoadingData && (
+            <Skeleton customClass="h-[150px] w-[100%]" rtl={true} />
+          )}
+          {!isLoadingData &&
+            portfolios?.map((portfolio, ind) => (
+              <Card key={`portfolio-${portfolio.id}`}>
+                <div className="relative px-2 pt-4">
+                  <button
+                    type="button"
+                    className="btn btn-md absolute top-0 end-0"
+                    onClick={() => deleteExistingPort(portfolio.id)}
+                  >
+                    Remove
+                  </button>
+                  <h4 className="font-bold text-sm underline mb-6">
+                    Portfolio {ind + 1}
+                  </h4>
+                  <PortfolioForm portfolio={portfolio} />
+                </div>
+              </Card>
+            ))}
+          {!isLoadingData &&
+            newPortfolios?.map((portfolio, ind) => (
+              <Card key={`newPortfolio-${ind}`}>
+                <div className="relative px-2 pt-4">
+                  <button
+                    type="button"
+                    className="btn btn-md absolute top-0 end-0"
+                    onClick={() => onDeletePortofolio(ind)}
+                  >
+                    Remove
+                  </button>
+                  <h4 className="font-bold text-sm underline mb-6">
+                    Portfolio {portfolios.length + ind + 1}
+                  </h4>
+                  <NewPortfolioForm newPortfolio={portfolio} index={ind} />
+                </div>
+              </Card>
+            ))}
         </div>
         <aside className="hidden md:block md:w-[45%] bg-white h-fit">
           <PreviewContent />

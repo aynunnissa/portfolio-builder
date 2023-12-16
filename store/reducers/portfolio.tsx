@@ -15,6 +15,7 @@ interface IPortfolioState {
   newPortfolios: INewPortfolio[];
   idDeletedPortfolios: string[];
   totalChanged: number;
+  isLoadingData: boolean;
 }
 
 const initialState: IPortfolioState = {
@@ -23,6 +24,7 @@ const initialState: IPortfolioState = {
   newPortfolios: [],
   idDeletedPortfolios: [],
   totalChanged: 0,
+  isLoadingData: true,
 };
 
 const isPortfolioEqual = (prevPort: IPortfolio, newPort: IPortfolio) => {
@@ -58,6 +60,7 @@ const portfolioSlice = createSlice({
         ...state,
         portfolios: action.payload,
         existingPortfolios: { ...objectPortfolios },
+        isLoadingData: false,
       };
     },
     updatePortfolio: (state, action: PayloadAction<IPortfolio>) => {
@@ -109,11 +112,9 @@ const portfolioSlice = createSlice({
     },
     addNewPortfolio: (state, action: PayloadAction<INewPortfolio>) => {
       const newPortos = [...state.newPortfolios];
-      // const newInd: number = newPortos.length;
       const newPortData = action.payload;
       let currentTotalChanges = state.totalChanged;
       currentTotalChanges++;
-      // newPortData.index = newInd;
       newPortos.push(newPortData);
 
       return {
