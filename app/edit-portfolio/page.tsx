@@ -1,5 +1,6 @@
 'use client';
 
+import ImageUpload from '@/components/edit-portfolio/ImageUpload';
 import NewPortfolioForm from '@/components/edit-portfolio/NewPortfolioForm';
 import PortfolioForm from '@/components/edit-portfolio/PortfolioForm';
 import PreviewButton from '@/components/edit-portfolio/PreviewButton';
@@ -118,6 +119,12 @@ const EditPortfolioPage = () => {
           >
             Simpan Perubahan
           </button>
+          <div className="rounded shadow p-4">
+            <ImageUpload field="bgImage" />
+          </div>
+          <div className="rounded shadow p-4">
+            <ImageUpload field="profileImage" />
+          </div>
           <div className="rounded shadow p-4">
             <ProfileForm />
           </div>
