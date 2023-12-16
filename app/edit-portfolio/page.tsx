@@ -5,6 +5,7 @@ import NewPortfolioForm from '@/components/edit-portfolio/NewPortfolioForm';
 import PortfolioForm from '@/components/edit-portfolio/PortfolioForm';
 import PreviewContent from '@/components/edit-portfolio/PreviewContent';
 import ProfileForm from '@/components/edit-portfolio/ProfileForm';
+import Card from '@/components/shared/Card';
 import { client } from '@/lib/client';
 import {
   addNewPortfolio,
@@ -75,36 +76,41 @@ const EditPortfolioPage = () => {
       porto => existingPortfolios[porto.id].changed
     );
 
-    axios
-      .all([
-        ...editedPortfolio.map(editedPort =>
-          client.put({
-            url: `/users/1/portfolios/${editedPort.id}`,
-            data: editedPort,
-          })
-        ),
+    const updatePortfolioRequests = [
+      ...editedPortfolio.map(editedPort =>
         client.put({
-          url: '/users/1',
-          data: {
-            name: dataProfile.name,
-            title: dataProfile.title,
-            description: dataProfile.description,
-          },
-        }),
-      ])
-      .then(data => console.log(data));
+          url: `/users/1/portfolios/${editedPort.id}`,
+          data: editedPort,
+        })
+      ),
+    ];
 
-    axios
-      .all(newPortfolios.map(newPort => client.post({ url, data: newPort })))
-      .then(data => console.log(data));
+    const updateProfileRequest = client.put({
+      url: '/users/1',
+      data: {
+        name: dataProfile.name,
+        title: dataProfile.title,
+        description: dataProfile.description,
+      },
+    });
 
-    axios
-      .all(
-        idDeletedPortfolios.map(id =>
-          client.delete({ url: `/users/1/portfolios/${id}` })
-        )
-      )
-      .then(data => console.log(data));
+    const newPortfolioRequests = [
+      ...newPortfolios.map(newPort => client.post({ url, data: newPort })),
+    ];
+
+    const deletePortfolioRequests = [
+      ...idDeletedPortfolios.map(id =>
+        client.delete({ url: `/users/1/portfolios/${id}` })
+      ),
+    ];
+    const allRequest = [
+      ...updatePortfolioRequests,
+      updateProfileRequest,
+      ...newPortfolioRequests,
+      ...deletePortfolioRequests,
+    ];
+
+    axios.all(allRequest).then(data => console.log(data));
   };
 
   const deleteExistingPort = (id: string) => {
@@ -119,42 +125,58 @@ const EditPortfolioPage = () => {
     <>
       <div className="flex gap-4">
         <div className="flex flex-col gap-4 w-full md:w-[55%]">
-          <button
-            type="submit"
-            className={`mt-5 btn btn-md ${
-              totalChanged > 0 ? 'btn-primary' : 'btn-disabled'
-            }`}
-          >
-            Simpan Perubahan
-          </button>
-          <div className="rounded shadow p-4">
+          <div className="flex gap-4">
+            <button
+              type="button"
+              name="add portfolio"
+              onClick={addNewPortfolioForm}
+              className={`mt-5 btn btn-md ${
+                portfolios.length + newPortfolios.length === 10
+                  ? 'btn-disabled'
+                  : 'btn-primary'
+              }`}
+            >
+              + Add portfolio
+            </button>
+            <button
+              type="submit"
+              className={`mt-5 btn btn-md ${
+                totalChanged > 0 ? 'btn-primary' : 'btn-disabled'
+              }`}
+              onClick={submitNewPortfolioData}
+            >
+              Simpan Perubahan
+            </button>
+          </div>
+          <Card>
             <ImageUpload field="bgImage" />
-          </div>
-          <div className="rounded shadow p-4">
+          </Card>
+          <Card>
             <ImageUpload field="profileImage" />
-          </div>
-          <div className="rounded shadow p-4">
+          </Card>
+          <Card>
             <ProfileForm />
-          </div>
-          <div className="rounded shadow p-4">
-            {portfolios?.map(portfolio => (
-              <PortfolioForm
-                key={`portfolio-${portfolio.id}`}
-                portfolio={portfolio}
-                deleteHandler={() => deleteExistingPort(portfolio.id)}
-              />
-            ))}
-          </div>
-          <button
-            type="button"
-            name="add portfolio"
-            onClick={addNewPortfolioForm}
-          >
-            Add portfolio
-          </button>
-          <div className="rounded shadow p-4">
-            {newPortfolios?.map((portfolio, ind) => (
-              <div key={`newPortfolio-${ind}`} className="relative px-2 pt-10">
+          </Card>
+          {portfolios?.map((portfolio, ind) => (
+            <Card key={`portfolio-${portfolio.id}`}>
+              <div className="relative px-2 pt-4">
+                <button
+                  type="button"
+                  className="btn btn-md absolute top-0 end-0"
+                  onClick={() => deleteExistingPort(portfolio.id)}
+                >
+                  Remove
+                </button>
+                <h4 className="font-bold text-sm underline mb-6">
+                  Portfolio {ind + 1}
+                </h4>
+                <PortfolioForm portfolio={portfolio} />
+              </div>
+            </Card>
+          ))}
+          {newPortfolios?.map((portfolio, ind) => (
+            <Card key={`newPortfolio-${ind}`}>
+              <div className="relative px-2 pt-4">
                 <button
                   type="button"
                   className="btn btn-md absolute top-0 end-0"
@@ -162,15 +184,15 @@ const EditPortfolioPage = () => {
                 >
                   Remove
                 </button>
+                <h4 className="font-bold text-sm underline mb-6">
+                  Portfolio {portfolios.length + ind + 1}
+                </h4>
                 <NewPortfolioForm newPortfolio={portfolio} index={ind} />
               </div>
-            ))}
-            <button type="button" onClick={submitNewPortfolioData}>
-              Submit All
-            </button>
-          </div>
+            </Card>
+          ))}
         </div>
-        <aside className="hidden md:block md:w-[45%]">
+        <aside className="hidden md:block md:w-[45%] bg-white h-fit">
           <PreviewContent />
         </aside>
       </div>

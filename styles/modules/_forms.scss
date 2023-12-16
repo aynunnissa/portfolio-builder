@@ -1,0 +1,15 @@
+@layer components {
+	.form-input {
+		@apply bg-white border border-black-100 w-full rounded-[7px] px-3 py-2 focus:outline-none placeholder:text-black-400 text-black-1000 text-sm transition-all;
+		@apply disabled:form-input--disabled;
+	}
+
+	.form-input--error {
+		@apply border-danger-main;
+	}
+
+	.form-input--disabled {
+		@apply bg-black-100 text-black-300 ;
+	}
+
+}

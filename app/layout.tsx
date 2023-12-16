@@ -21,9 +21,11 @@ export default function RootLayout({
     <Providers>
       <html lang="en">
         <body className={inter.className}>
-          <div className="flex flex-col items-between min-h-100vh gap-8">
+          <div className="flex flex-col items-between min-h-100vh">
             <Header />
-            {children}
+            <main className="px-4 sm:px-8 md:px-12 lg:px-20 bg-surface-gray py-8">
+              {children}
+            </main>
             <Footer />
           </div>
         </body>
