@@ -11,14 +11,9 @@ import {
   updateProfile,
 } from '@/store/reducers/profile';
 
-// const notEmptyValidation = /^[a-zA-Z0-9\s]*$/;
-
 const ProfileForm = () => {
-  const isInitialLoad = useRef(true);
+  const { profile } = useSelector(profileSelector);
   const dispatch = useDispatch();
-  const [userId, setUserId] = useState(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const profile = useSelector(profileSelector);
 
   const {
     value: enteredName,
@@ -47,52 +42,11 @@ const ProfileForm = () => {
     inputBlurHandler: descBlurHandler,
   } = useInput((value: string) => value !== '');
 
-  // const updateProfileData = async (event: MouseEvent<HTMLButtonElemen>) => {
-  //   event.preventDefault();
-  //   if (!userId) {
-  //     console.log('User not found');
-  //     return;
-  //   }
-
-  //   setIsSubmitting(true);
-
-  //   const { data, error }: IResponse = await client.put({
-  //     url: `/users/${userId}`,
-  //     data: {
-  //       name: enteredName,
-  //       title: enteredTitle,
-  //       description: enteredDesc,
-  //     },
-  //   });
-
-  //   setIsSubmitting(false);
-
-  //   if (data) {
-  //     setDefaultName(data.name);
-  //     setDefaultTitle(data.title);
-  //     setDefaultDesc(data.description);
-  //   }
-  // };
-
-  const fetchInitialProfile = useCallback(async () => {
-    if (isInitialLoad.current) {
-      const { data, error }: IResponse = await client.get({ url: '/users' });
-      if (data) {
-        const profileData = data[0];
-        setUserId(profileData.id);
-        setDefaultName(profileData.name);
-        setDefaultTitle(profileData.title);
-        setDefaultDesc(profileData.description);
-
-        dispatch(loadProfile(profileData));
-      }
-      isInitialLoad.current = false;
-    }
-  }, [setDefaultName, setDefaultTitle, setDefaultDesc, dispatch]);
-
   useEffect(() => {
-    fetchInitialProfile();
-  }, [fetchInitialProfile]);
+    setDefaultName(profile.name);
+    setDefaultTitle(profile.title);
+    setDefaultDesc(profile.description);
+  }, [profile]);
 
   const handleChange = (
     event:
@@ -107,7 +61,7 @@ const ProfileForm = () => {
 
   return (
     <div>
-      <h4 className="text-bold text-underline">Profile</h4>
+      <h4 className="font-bold text-sm underline mb-6">Profile</h4>
       <div className="flex flex-col gap-y-4">
         <div className="profile-field">
           <input

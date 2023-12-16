@@ -32,7 +32,7 @@
 
 	// for primary button
 	.btn-primary {
-		@apply border bg-white border-primary-light text-primary-main;
+		@apply border bg-transparent border-primary-light text-primary-main;
 		@apply focus:bg-primary-main focus:text-white;
 		@apply hover:bg-primary-main hover:text-white;
 	}

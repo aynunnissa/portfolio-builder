@@ -14,13 +14,7 @@ import {
 
 // const notEmptyValidation = /^[a-zA-Z0-9\s]*$/;
 
-const PortfolioForm = ({
-  portfolio,
-  deleteHandler,
-}: {
-  portfolio: IPortfolio;
-  deleteHandler: () => void;
-}) => {
+const PortfolioForm = ({ portfolio }: { portfolio: IPortfolio }) => {
   const isInitialLoad = useRef(true);
   const dispatch = useDispatch();
   const [userId, setUserId] = useState(null);
@@ -117,71 +111,61 @@ const PortfolioForm = ({
   ]);
 
   return (
-    <div className="relative px-2 pt-10">
-      <button
-        type="button"
-        className="btn btn-md absolute top-0 end-0"
-        onClick={deleteHandler}
-      >
-        Remove
-      </button>
-      <h4 className="text-bold text-underline">Profile</h4>
-      <div className="flex flex-col gap-y-4">
-        <div className="portfolio-field">
-          <input
-            type="text"
-            id="portfolio-name"
-            onChange={e => {
-              handleChange(e, 'name');
-              nameChangedHandler(e);
-            }}
-            className="form-input"
-            onBlur={nameBlurHandler}
-            value={enteredName}
-            placeholder="Nama"
-            required
-          />
-          {nameInputHasError && (
-            <p className="text-red-800">Nama harus diisi</p>
-          )}
-        </div>
-        <div className="portfolio-field">
-          <input
-            type="text"
-            id="portfolio-position"
-            onChange={e => {
-              handleChange(e, 'position');
-              positionChangedHandler(e);
-            }}
-            className="form-input"
-            onBlur={positionBlurHandler}
-            value={enteredPosition}
-            placeholder="Posisi"
-            required
-          />
-          {positionInputHasError && (
-            <p className="text-red-800">Position harus diisi</p>
-          )}
-        </div>
-        <div className="portfolio-field">
-          <input
-            type="text"
-            id="portfolio-company"
-            onChange={e => {
-              handleChange(e, 'company');
-              companyChangedHandler(e);
-            }}
-            className="form-input"
-            onBlur={companyBlurHandler}
-            value={enteredCompany}
-            placeholder="Perusahaan"
-            required
-          />
-          {companyInputHasError && (
-            <p className="text-red-800">Perusahaan harus diisi</p>
-          )}
-        </div>
-        <div className="portfolio-field">
+    <div className="flex flex-col gap-y-4">
+      <div className="portfolio-field">
+        <input
+          type="text"
+          id="portfolio-name"
+          onChange={e => {
+            handleChange(e, 'name');
+            nameChangedHandler(e);
+          }}
+          className="form-input"
+          onBlur={nameBlurHandler}
+          value={enteredName}
+          placeholder="Nama"
+          required
+        />
+        {nameInputHasError && <p className="text-red-800">Nama harus diisi</p>}
+      </div>
+      <div className="portfolio-field">
+        <input
+          type="text"
+          id="portfolio-position"
+          onChange={e => {
+            handleChange(e, 'position');
+            positionChangedHandler(e);
+          }}
+          className="form-input"
+          onBlur={positionBlurHandler}
+          value={enteredPosition}
+          placeholder="Posisi"
+          required
+        />
+        {positionInputHasError && (
+          <p className="text-red-800">Position harus diisi</p>
+        )}
+      </div>
+      <div className="portfolio-field">
+        <input
+          type="text"
+          id="portfolio-company"
+          onChange={e => {
+            handleChange(e, 'company');
+            companyChangedHandler(e);
+          }}
+          className="form-input"
+          onBlur={companyBlurHandler}
+          value={enteredCompany}
+          placeholder="Perusahaan"
+          required
+        />
+        {companyInputHasError && (
+          <p className="text-red-800">Perusahaan harus diisi</p>
+        )}
+      </div>
+      <div className="flex gap-2">
+        <div className="portfolio-field w-full">
           <input
             type="date"
             id="portfolio-start-date"
@@ -199,7 +183,7 @@ const PortfolioForm = ({
             <p className="text-red-800">Tanggal Mulai harus diisi</p>
           )}
         </div>
-        <div className="portfolio-field">
+        <div className="portfolio-field w-full">
           <input
             type="date"
             id="portfolio-end-date"
@@ -217,24 +201,24 @@ const PortfolioForm = ({
             <p className="text-red-800">Tanggal Selesai harus diisi</p>
           )}
         </div>
-        <div className="portfolio-field">
-          <textarea
-            id="portfolio-desc"
-            onChange={e => {
-              handleChange(e, 'description');
-              descChangedHandler(e);
-            }}
-            className="form-input"
-            onBlur={descBlurHandler}
-            placeholder="Deskripsi"
-            value={enteredDesc}
-            rows={4}
-            required
-          ></textarea>
-          {descInputHasError && (
-            <p className="text-red-800">Deskripsi harus diisi</p>
-          )}
-        </div>
+      </div>
+      <div className="portfolio-field">
+        <textarea
+          id="portfolio-desc"
+          onChange={e => {
+            handleChange(e, 'description');
+            descChangedHandler(e);
+          }}
+          className="form-input"
+          onBlur={descBlurHandler}
+          placeholder="Deskripsi"
+          value={enteredDesc}
+          rows={4}
+          required
+        ></textarea>
+        {descInputHasError && (
+          <p className="text-red-800">Deskripsi harus diisi</p>
+        )}
       </div>
     </div>
   );

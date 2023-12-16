@@ -29,16 +29,34 @@ const config: Config = {
             600: 'rgba(159, 159, 159, 1)'
           }
         },
+        black: {
+          1000: '#0D0D0D',
+          900: '#252525',
+          800: '#3D3D3D',
+          700: '#565656',
+          600: '#6E6E6E',
+          500: '#868686',
+          400: '#9E9E9E',
+          300: '#B6B6B6',
+          200: '#CFCFCF',
+          100: '#E7E7E7',
+          primary: '#0D0D0D',
+        },
         disabled: {
           text: 'rgba(145, 158, 171, 0.8)',
           background: 'rgba(145, 158, 171, 0.24)'
         },
         surface: {
-          gray: 'rgba(113, 121, 132, 1)'
+          gray: 'rgba(250,250,250,255)'
         },
         icon: {
           gray: 'rgba(108, 112, 116, 1)'
-        }
+        },
+        danger: {
+          main: '#EC1C24',
+          border: '#F58B8F',
+          surface: '#FDE3E4',
+        },
       }
     },
   },

@@ -19,7 +19,7 @@ const Header = () => {
             className="object-cover"
           />
           <p className="font-bold text-base md:text-2xl text-primary-main">
-            MAKEIT
+            MYPORTO
           </p>
         </div>
         <div className="header-links flex gap-2 sm:gap-4 md:gap-8 px-2 py-5 md:py-4 sm:px-5">
@@ -32,7 +32,7 @@ const Header = () => {
               Portfolio
             </p>
           </Link>
-          <Link href="/">
+          <Link href="/edit-portfolio">
             <p
               className={`p-2 hover:text-primary-main ${
                 pathName === '/edit-portfolio'

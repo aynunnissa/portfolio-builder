@@ -1,12 +1,17 @@
 import { convertImageToBase64 } from '@/lib/helper';
-import { profileSelector, updateProfile } from '@/store/reducers/profile';
+import {
+  profileSelector,
+  updateBGImage,
+  updateProfile,
+  updateProfileImage,
+} from '@/store/reducers/profile';
 import { ChangeEvent, FormEvent, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 const ImageUpload = ({ field }: { field: 'bgImage' | 'profileImage' }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const profile = useSelector(profileSelector);
+  const { profile } = useSelector(profileSelector);
   const dispatch = useDispatch();
 
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -15,9 +20,8 @@ const ImageUpload = ({ field }: { field: 'bgImage' | 'profileImage' }) => {
     if (file) {
       try {
         const base64 = await convertImageToBase64(file);
-        const newObj = { ...profile };
-        newObj[field] = base64;
-        dispatch(updateProfile(newObj));
+        if (field === 'bgImage') dispatch(updateBGImage(base64));
+        else if (field === 'profileImage') dispatch(updateProfileImage(base64));
       } catch (error) {
         console.error('Error uploading image:', error);
       }
