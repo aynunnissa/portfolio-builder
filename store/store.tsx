@@ -3,6 +3,5 @@ import thunk from "redux-thunk";
 import reducers from "./reducers";
 
 export const store = configureStore({
-    reducer: reducers,
-    middleware: [thunk]
+    reducer: reducers
 })

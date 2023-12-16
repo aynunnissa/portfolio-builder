@@ -1,2 +1,0 @@
-export const LOAD_PROFILE = "LOAD_PROFILE"
-export const LOAD_PORTFOLIO = "LOAD_PORTFOLIO"
