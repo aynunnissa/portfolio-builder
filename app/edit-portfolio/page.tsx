@@ -20,7 +20,7 @@ import { IResponse } from '@/types/client';
 import axios from 'axios';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 const ModalPreviewComponent = dynamic(
@@ -33,6 +33,7 @@ const ModalPreviewComponent = dynamic(
 
 const EditPortfolioPage = () => {
   const dispatch = useDispatch();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     portfolios,
     totalChanged,
@@ -48,21 +49,6 @@ const EditPortfolioPage = () => {
     isLoadingData: isLoadingProfile,
   } = useSelector(profileSelector);
 
-  // const getInitialData = useCallback(async () => {
-  //   const { data, error }: IResponse = await client.get({
-  //     url: `/users/${1}/portfolios`,
-  //   });
-
-  //   if (data) {
-  //     // setPortfolios(data);
-  //     dispatch(loadPortfolio(data));
-  //   }
-  // }, [dispatch]);
-
-  // useEffect(() => {
-  //   getInitialData();
-  // }, [getInitialData]);
-
   const addNewPortfolioForm = () => {
     dispatch(
       addNewPortfolio({
@@ -76,7 +62,8 @@ const EditPortfolioPage = () => {
     );
   };
 
-  const submitNewPortfolioData = () => {
+  const submitNewPortfolioData = async () => {
+    setIsSubmitting(true);
     const url = '/users/1/portfolios';
 
     const editedPortfolio = portfolios.filter(
@@ -117,7 +104,9 @@ const EditPortfolioPage = () => {
       ...deletePortfolioRequests,
     ];
 
-    axios.all(allRequest).then(data => console.log(data));
+    await axios.all(allRequest).then(data => console.log(data));
+
+    setIsSubmitting(false);
   };
 
   const deleteExistingPort = (id: string) => {
@@ -154,17 +143,24 @@ const EditPortfolioPage = () => {
             >
               + Add portfolio
             </button>
-            <button
-              type="submit"
-              className={`mt-5 btn btn-md ${
-                totalChanged > 0 || isProfileChanged
-                  ? 'btn-primary'
-                  : 'btn-disabled'
-              }`}
-              onClick={submitNewPortfolioData}
-            >
-              Simpan Perubahan
-            </button>
+            {!isSubmitting && (
+              <button
+                type="submit"
+                className={`mt-5 btn btn-md ${
+                  totalChanged > 0 || isProfileChanged
+                    ? 'btn-primary'
+                    : 'btn-disabled'
+                }`}
+                onClick={submitNewPortfolioData}
+              >
+                Simpan Perubahan
+              </button>
+            )}
+            {isSubmitting && (
+              <button type="submit" className="btn-disabled mt-5 btn btn-md">
+                Submitting...
+              </button>
+            )}
           </div>
           {isLoadingProfile ? (
             <Skeleton customClass="h-[62px] w-[100%]" rtl={true} />
