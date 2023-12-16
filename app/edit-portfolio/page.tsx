@@ -3,6 +3,7 @@
 import NewPortfolioForm from '@/components/edit-portfolio/NewPortfolioForm';
 import PortfolioForm from '@/components/edit-portfolio/PortfolioForm';
 import PreviewButton from '@/components/edit-portfolio/PreviewButton';
+import PreviewContent from '@/components/edit-portfolio/PreviewContent';
 import PreviewModal from '@/components/edit-portfolio/PreviewModal';
 import ProfileForm from '@/components/edit-portfolio/ProfileForm';
 import { client } from '@/lib/client';
@@ -106,49 +107,60 @@ const EditPortfolioPage = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <button
-        type="submit"
-        className={`mt-5 btn btn-md ${
-          totalChanged > 0 ? 'btn-primary' : 'btn-disabled'
-        }`}
-      >
-        Simpan Perubahan
-      </button>
-      <div className="rounded shadow p-4">
-        <ProfileForm />
-      </div>
-      <div className="rounded shadow p-4">
-        {portfolios?.map(portfolio => (
-          <PortfolioForm
-            key={`portfolio-${portfolio.id}`}
-            portfolio={portfolio}
-            deleteHandler={() => deleteExistingPort(portfolio.id)}
-          />
-        ))}
-      </div>
-      <button type="button" name="add portfolio" onClick={addNewPortfolioForm}>
-        Add portfolio
-      </button>
-      <div className="rounded shadow p-4">
-        {newPortfolios?.map((portfolio, ind) => (
-          <div key={`newPortfolio-${ind}`} className="relative px-2 pt-10">
-            <button
-              type="button"
-              className="btn btn-md absolute top-0 end-0"
-              onClick={() => onDeletePortofolio(ind)}
-            >
-              Remove
-            </button>
-            <NewPortfolioForm newPortfolio={portfolio} index={ind} />
+    <>
+      <div className="flex gap-4">
+        <div className="flex flex-col gap-4 w-full md:w-[55%]">
+          <button
+            type="submit"
+            className={`mt-5 btn btn-md ${
+              totalChanged > 0 ? 'btn-primary' : 'btn-disabled'
+            }`}
+          >
+            Simpan Perubahan
+          </button>
+          <div className="rounded shadow p-4">
+            <ProfileForm />
           </div>
-        ))}
-        <button type="button" onClick={submitNewPortfolioData}>
-          Submit All
-        </button>
+          <div className="rounded shadow p-4">
+            {portfolios?.map(portfolio => (
+              <PortfolioForm
+                key={`portfolio-${portfolio.id}`}
+                portfolio={portfolio}
+                deleteHandler={() => deleteExistingPort(portfolio.id)}
+              />
+            ))}
+          </div>
+          <button
+            type="button"
+            name="add portfolio"
+            onClick={addNewPortfolioForm}
+          >
+            Add portfolio
+          </button>
+          <div className="rounded shadow p-4">
+            {newPortfolios?.map((portfolio, ind) => (
+              <div key={`newPortfolio-${ind}`} className="relative px-2 pt-10">
+                <button
+                  type="button"
+                  className="btn btn-md absolute top-0 end-0"
+                  onClick={() => onDeletePortofolio(ind)}
+                >
+                  Remove
+                </button>
+                <NewPortfolioForm newPortfolio={portfolio} index={ind} />
+              </div>
+            ))}
+            <button type="button" onClick={submitNewPortfolioData}>
+              Submit All
+            </button>
+          </div>
+        </div>
+        <aside className="hidden md:block md:w-[45%]">
+          <PreviewContent />
+        </aside>
       </div>
       <ModalPreviewComponent />
-    </div>
+    </>
   );
 };
 
