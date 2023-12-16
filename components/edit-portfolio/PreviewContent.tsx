@@ -5,10 +5,15 @@ import Image from 'next/image';
 import { useSelector } from 'react-redux';
 
 import DefaultImage from '@/app/no-image.png';
+import Skeleton from '../shared/Skeleton';
 
 const PreviewContent = () => {
-  const { portfolios, newPortfolios } = useSelector(portfolioSelector);
-  const { profile: profileData } = useSelector(profileSelector);
+  const {
+    portfolios,
+    newPortfolios,
+    isLoadingData: isLoadingPorto,
+  } = useSelector(portfolioSelector);
+  const { profile: profileData, isLoadingData } = useSelector(profileSelector);
 
   const PortfolioItem = (porto: { data: IPortfolio | INewPortfolio }) => {
     const portofolioData = porto.data;
@@ -53,23 +58,47 @@ const PreviewContent = () => {
             alt="Portofolio Avatar Image"
           />
         </div>
-        <div className="preview-profile text-center">
-          <p className="text-lg font-bold">{profileData.name}</p>
-          <p className="text-md font-bold text-gray-600">{profileData.title}</p>
-          <p className="text-gray-900">{profileData.description}</p>
-        </div>
+        {isLoadingData ? (
+          <div className="flex flex-col items-center">
+            {[1, 2, 3].map(ind => (
+              <Skeleton
+                key={`skeletonText-${ind}`}
+                customClass="h-[20px] w-[40%]"
+                rtl={true}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="preview-profile text-center">
+            <p className="text-lg font-bold">{profileData.name}</p>
+            <p className="text-md font-bold text-gray-600">
+              {profileData.title}
+            </p>
+            <p className="text-gray-900">{profileData.description}</p>
+          </div>
+        )}
         <div className="preview-portfolio mt-4 flex flex-col gap-4">
           <p className="font-bold">Portofolio</p>
-          {portfolios.map((porto, ind) => (
-            <div key={`portofolio-${ind}`}>
-              <PortfolioItem data={porto} />
-            </div>
-          ))}
-          {newPortfolios.map((porto, ind) => (
-            <div key={`newPortofolio-${ind}`}>
-              <PortfolioItem data={porto} />
-            </div>
-          ))}
+          {isLoadingPorto &&
+            [1, 2, 3, 4].map(ind => (
+              <Skeleton
+                key={`skeletonText-${ind}`}
+                customClass="h-[100px] w-[100%]"
+                rtl={true}
+              />
+            ))}
+          {!isLoadingPorto &&
+            portfolios.map((porto, ind) => (
+              <div key={`portofolio-${ind}`}>
+                <PortfolioItem data={porto} />
+              </div>
+            ))}
+          {!isLoadingPorto &&
+            newPortfolios.map((porto, ind) => (
+              <div key={`newPortofolio-${ind}`}>
+                <PortfolioItem data={porto} />
+              </div>
+            ))}
         </div>
       </div>
     </div>

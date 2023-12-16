@@ -6,6 +6,7 @@ import PortfolioForm from '@/components/edit-portfolio/PortfolioForm';
 import PreviewContent from '@/components/edit-portfolio/PreviewContent';
 import ProfileForm from '@/components/edit-portfolio/ProfileForm';
 import Card from '@/components/shared/Card';
+import Skeleton from '@/components/shared/Skeleton';
 import { client } from '@/lib/client';
 import {
   addNewPortfolio,
@@ -37,10 +38,14 @@ const EditPortfolioPage = () => {
     idDeletedPortfolios,
     newPortfolios,
     existingPortfolios,
+    isLoadingData,
   } = useSelector(portfolioSelector);
 
-  const { profile: dataProfile, isProfileChanged } =
-    useSelector(profileSelector);
+  const {
+    profile: dataProfile,
+    isProfileChanged,
+    isLoadingData: isLoadingProfile,
+  } = useSelector(profileSelector);
 
   // const getInitialData = useCallback(async () => {
   //   const { data, error }: IResponse = await client.get({
@@ -151,49 +156,67 @@ const EditPortfolioPage = () => {
               Simpan Perubahan
             </button>
           </div>
-          <Card>
-            <ImageUpload field="bgImage" />
-          </Card>
-          <Card>
-            <ImageUpload field="profileImage" />
-          </Card>
-          <Card>
-            <ProfileForm />
-          </Card>
-          {portfolios?.map((portfolio, ind) => (
-            <Card key={`portfolio-${portfolio.id}`}>
-              <div className="relative px-2 pt-4">
-                <button
-                  type="button"
-                  className="btn btn-md absolute top-0 end-0"
-                  onClick={() => deleteExistingPort(portfolio.id)}
-                >
-                  Remove
-                </button>
-                <h4 className="font-bold text-sm underline mb-6">
-                  Portfolio {ind + 1}
-                </h4>
-                <PortfolioForm portfolio={portfolio} />
-              </div>
+          {isLoadingProfile ? (
+            <Skeleton customClass="h-[62px] w-[100%]" rtl={true} />
+          ) : (
+            <Card>
+              <ImageUpload field="bgImage" />
             </Card>
-          ))}
-          {newPortfolios?.map((portfolio, ind) => (
-            <Card key={`newPortfolio-${ind}`}>
-              <div className="relative px-2 pt-4">
-                <button
-                  type="button"
-                  className="btn btn-md absolute top-0 end-0"
-                  onClick={() => onDeletePortofolio(ind)}
-                >
-                  Remove
-                </button>
-                <h4 className="font-bold text-sm underline mb-6">
-                  Portfolio {portfolios.length + ind + 1}
-                </h4>
-                <NewPortfolioForm newPortfolio={portfolio} index={ind} />
-              </div>
+          )}
+          {isLoadingProfile ? (
+            <Skeleton customClass="h-[62px] w-[100%]" rtl={true} />
+          ) : (
+            <Card>
+              <ImageUpload field="profileImage" />
             </Card>
-          ))}
+          )}
+
+          {isLoadingProfile ? (
+            <Skeleton customClass="h-[150px] w-[100%]" rtl={true} />
+          ) : (
+            <Card>
+              <ProfileForm />
+            </Card>
+          )}
+          {isLoadingData && (
+            <Skeleton customClass="h-[150px] w-[100%]" rtl={true} />
+          )}
+          {!isLoadingData &&
+            portfolios?.map((portfolio, ind) => (
+              <Card key={`portfolio-${portfolio.id}`}>
+                <div className="relative px-2 pt-4">
+                  <button
+                    type="button"
+                    className="btn btn-md absolute top-0 end-0"
+                    onClick={() => deleteExistingPort(portfolio.id)}
+                  >
+                    Remove
+                  </button>
+                  <h4 className="font-bold text-sm underline mb-6">
+                    Portfolio {ind + 1}
+                  </h4>
+                  <PortfolioForm portfolio={portfolio} />
+                </div>
+              </Card>
+            ))}
+          {!isLoadingData &&
+            newPortfolios?.map((portfolio, ind) => (
+              <Card key={`newPortfolio-${ind}`}>
+                <div className="relative px-2 pt-4">
+                  <button
+                    type="button"
+                    className="btn btn-md absolute top-0 end-0"
+                    onClick={() => onDeletePortofolio(ind)}
+                  >
+                    Remove
+                  </button>
+                  <h4 className="font-bold text-sm underline mb-6">
+                    Portfolio {portfolios.length + ind + 1}
+                  </h4>
+                  <NewPortfolioForm newPortfolio={portfolio} index={ind} />
+                </div>
+              </Card>
+            ))}
         </div>
         <aside className="hidden md:block md:w-[45%] bg-white h-fit">
           <PreviewContent />
