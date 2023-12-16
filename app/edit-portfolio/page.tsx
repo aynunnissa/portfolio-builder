@@ -2,6 +2,8 @@
 
 import NewPortfolioForm from '@/components/edit-portfolio/NewPortfolioForm';
 import PortfolioForm from '@/components/edit-portfolio/PortfolioForm';
+import PreviewButton from '@/components/edit-portfolio/PreviewButton';
+import PreviewModal from '@/components/edit-portfolio/PreviewModal';
 import ProfileForm from '@/components/edit-portfolio/ProfileForm';
 import { client } from '@/lib/client';
 import {
@@ -14,8 +16,17 @@ import {
 import { IResponse } from '@/types/client';
 import { INewPortfolio, IPortfolio } from '@/types/user';
 import axios from 'axios';
+import dynamic from 'next/dynamic';
 import { FormEventHandler, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
+const ModalPreviewComponent = dynamic(
+  () => import('@/components/edit-portfolio/PreviewModal'),
+  {
+    ssr: false,
+    loading: () => <p>Loading...</p>,
+  }
+);
 
 const EditPortfolioPage = () => {
   const dispatch = useDispatch();
@@ -136,6 +147,7 @@ const EditPortfolioPage = () => {
           Submit All
         </button>
       </div>
+      <ModalPreviewComponent />
     </div>
   );
 };
