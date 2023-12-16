@@ -12,16 +12,16 @@ const PreviewContent = () => {
     const portofolioData = porto.data;
     return (
       <div className="rounded shadow p-4">
-        <p className="font-semibold text-base sm:text-md">
+        <p className="font-semibold text-base sm:text-lg">
           {portofolioData.position}
         </p>
-        <p className="font-semibold text-sm sm:text-base text-gray-600">
+        <p className="font-semibold text-sm text-gray-600">
           {portofolioData.company}
         </p>
-        <p className="text-gray-600 text-sm sm:text-base">
+        <p className="text-gray-600 text-sm mt-1">
           {portofolioData.startDate} - {portofolioData.endDate}
         </p>
-        <p className="text-sm sm:text-base">{portofolioData.description}</p>
+        <p className="text-sm mt-2">{portofolioData.description}</p>
       </div>
     );
   };

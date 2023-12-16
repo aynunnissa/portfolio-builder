@@ -41,20 +41,20 @@ const EditPortfolioPage = () => {
 
   const dataProfile = useSelector(profileSelector);
 
-  const getInitialData = useCallback(async () => {
-    const { data, error }: IResponse = await client.get({
-      url: `/users/${1}/portfolios`,
-    });
+  // const getInitialData = useCallback(async () => {
+  //   const { data, error }: IResponse = await client.get({
+  //     url: `/users/${1}/portfolios`,
+  //   });
 
-    if (data) {
-      // setPortfolios(data);
-      dispatch(loadPortfolio(data));
-    }
-  }, [dispatch]);
+  //   if (data) {
+  //     // setPortfolios(data);
+  //     dispatch(loadPortfolio(data));
+  //   }
+  // }, [dispatch]);
 
-  useEffect(() => {
-    getInitialData();
-  }, [getInitialData]);
+  // useEffect(() => {
+  //   getInitialData();
+  // }, [getInitialData]);
 
   const addNewPortfolioForm = () => {
     dispatch(
