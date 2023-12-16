@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 const ImageUpload = ({ field }: { field: 'bgImage' | 'profileImage' }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const profile = useSelector(profileSelector);
+  const { profile } = useSelector(profileSelector);
   const dispatch = useDispatch();
 
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
