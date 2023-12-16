@@ -9,7 +9,7 @@ interface IExistPortfolio {
   [key: string]: IExistPortfolioObject;
 }
 
-interface IProductState {
+interface IPortfolioState {
   existingPortfolios: IExistPortfolio;
   portfolios: IPortfolio[];
   newPortfolios: INewPortfolio[];
@@ -17,7 +17,7 @@ interface IProductState {
   totalChanged: number;
 }
 
-const initialState: IProductState = {
+const initialState: IPortfolioState = {
   existingPortfolios: {},
   portfolios: [],
   newPortfolios: [],
@@ -37,7 +37,7 @@ const isPortfolioEqual = (prevPort: IPortfolio, newPort: IPortfolio) => {
 };
 
 const portfolioSlice = createSlice({
-  name: 'products',
+  name: 'portfolios',
   initialState,
   reducers: {
     loadPortfolio: (state, action: PayloadAction<IPortfolio[]>) => {
@@ -128,7 +128,6 @@ const portfolioSlice = createSlice({
     ) => {
       const newPortos = [...state.newPortfolios];
       const data = action.payload;
-      console.error(`Index: ${data.index}`);
       const updatedInd: number = action.payload.index;
       const newPortData = action.payload.portfolio;
       newPortos[updatedInd] = newPortData;
@@ -162,5 +161,5 @@ export const {
 
 export default portfolioSlice.reducer;
 
-export const portfolioSelector = (state: { portfolioStore: IProductState }) =>
+export const portfolioSelector = (state: { portfolioStore: IPortfolioState }) =>
   state.portfolioStore;
