@@ -15,6 +15,13 @@ export const updatePortfolio = (portfolio: IPortfolio) => {
   };
 };
 
+export const deletePortfolio = (idPortfolio: string) => {
+  return {
+    type: actionTypes.DELETE_PORTFOLIO,
+    payload: idPortfolio,
+  };
+};
+
 export const addNewPortfolio = (portfolio: IPortfolio) => {
   return {
     type: actionTypes.ADD_NEW_PORTFOLIO,
@@ -22,9 +29,19 @@ export const addNewPortfolio = (portfolio: IPortfolio) => {
   };
 };
 
-export const updateNewPortfolio = (portfolio: IPortfolio) => {
+export const updateNewPortfolio = (portfolio: IPortfolio, ind: number) => {
   return {
     type: actionTypes.UPDATE_NEW_PORTFOLIO,
-    payload: portfolio,
+    payload: {
+      portfolio,
+      index: ind,
+    },
+  };
+};
+
+export const deleteNewPortfolio = (indexPortfolio: number) => {
+  return {
+    type: actionTypes.DELETE_NEW_PORTFOLIO,
+    payload: indexPortfolio,
   };
 };

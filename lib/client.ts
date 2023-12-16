@@ -14,7 +14,7 @@ export function client({ url, method, data, params }: IClient) {
     params: { ...params },
   })
     .then(function (response): IResponse {
-        console.log(response);
+        // console.log(response);
       return {
         status: response.status,
         data: response.data,

@@ -1,10 +1,13 @@
 'use client';
 
+import NewPortfolioForm from '@/components/edit-portfolio/NewPortfolioForm';
 import PortfolioForm from '@/components/edit-portfolio/PortfolioForm';
 import ProfileForm from '@/components/edit-portfolio/ProfileForm';
 import { client } from '@/lib/client';
 import {
   addNewPortfolio,
+  deleteNewPortfolio,
+  deletePortfolio,
   loadPortfolio,
   portfolioSelector,
 } from '@/store/reducers/portfolio';
@@ -16,21 +19,13 @@ import { useDispatch, useSelector } from 'react-redux';
 
 const EditPortfolioPage = () => {
   const dispatch = useDispatch();
-  const { portfolios, totalChanged, existingPortfolios, newPortfolios } =
+  const { portfolios, totalChanged, idDeletedPortfolios, newPortfolios } =
     useSelector(portfolioSelector);
-  console.log(newPortfolios);
-  // console.log(existingPortfolios);
-  // const [newPortfolios, setNewPortfolios] = useState<Object[]>([]);
-  // console.log(newPortfolios);
-  // const [isChanged, setIsChanged] = useState(false);
-  // const [portfolios, setPortfolios] = useState<IPortfolio[]>([]);
 
   const getInitialData = useCallback(async () => {
     const { data, error }: IResponse = await client.get({
       url: `/users/${1}/portfolios`,
     });
-
-    console.log(data);
 
     if (data) {
       // setPortfolios(data);
@@ -61,7 +56,24 @@ const EditPortfolioPage = () => {
     axios
       .all(newPortfolios.map(newPort => client.post({ url, data: newPort })))
       .then(data => console.log(data));
+
+    axios
+      .all(
+        idDeletedPortfolios.map(id =>
+          client.delete({ url: `/users/1/portfolios/${id}` })
+        )
+      )
+      .then(data => console.log(data));
   };
+
+  const deleteExistingPort = (id: string) => {
+    dispatch(deletePortfolio(id));
+  };
+
+  const onDeletePortofolio = (ind: number) => {
+    dispatch(deleteNewPortfolio(ind));
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <button
@@ -80,6 +92,7 @@ const EditPortfolioPage = () => {
           <PortfolioForm
             key={`portfolio-${portfolio.id}`}
             portfolio={portfolio}
+            deleteHandler={() => deleteExistingPort(portfolio.id)}
           />
         ))}
       </div>
@@ -87,17 +100,21 @@ const EditPortfolioPage = () => {
         Add portfolio
       </button>
       <div className="rounded shadow p-4">
-        <form>
-          {newPortfolios?.map((portfolio, ind) => (
-            <PortfolioForm
-              key={`newPortfolio-${ind}`}
-              newPortfolio={portfolio}
-            />
-          ))}
-          <button type="button" onClick={submitNewPortfolioData}>
-            Submit All
-          </button>
-        </form>
+        {newPortfolios?.map((portfolio, ind) => (
+          <div key={`newPortfolio-${ind}`} className="relative px-2 pt-10">
+            <button
+              type="button"
+              className="btn btn-md absolute top-0 end-0"
+              onClick={() => onDeletePortofolio(ind)}
+            >
+              Remove
+            </button>
+            <NewPortfolioForm newPortfolio={portfolio} index={ind} />
+          </div>
+        ))}
+        <button type="button" onClick={submitNewPortfolioData}>
+          Submit All
+        </button>
       </div>
     </div>
   );
