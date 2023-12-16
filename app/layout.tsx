@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import '@/styles/App.scss';
 import { Providers } from '@/store/providers';
 import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -20,8 +21,11 @@ export default function RootLayout({
     <Providers>
       <html lang="en">
         <body className={inter.className}>
-          <Header />
-          {children}
+          <div className="flex flex-col items-between min-h-100vh gap-8">
+            <Header />
+            {children}
+            <Footer />
+          </div>
         </body>
       </html>
     </Providers>
