@@ -38,7 +38,7 @@ const PreviewModal = () => {
         <div className="fixed inset-0 flex items-center justify-center overflow-x-hidden overflow-y-auto outline-none focus:outline-none">
           <div className="relative w-full p-4 z-50">
             {/* Modal content */}
-            <div className="modal bg-white">
+            <div className="modal bg-white rounded-md">
               {/* Modal header */}
               {/* Modal body */}
               <div className="modal-body max-h-[80vh] overflow-y-auto">
